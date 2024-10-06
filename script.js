@@ -1,20 +1,70 @@
-// Optional JavaScript if you want to add any interactivity in the future.
-// For now, no specific interactive features are added, but you can build upon this.
-// Placeholder script to load your 3D JSX model
+// JavaScript to make the website more interactive
 
-// Assuming you are using a framework like React or Three.js for your 3D model
-// For example, if using React with Three.js:
-import React from 'react';
-import ReactDOM from 'react-dom';
-import { Canvas } from '@react-three/fiber';
-import SolarSystemModel from './SolarSystemModel'; // Assuming your JSX model is here
+// Smooth scrolling for navigation
+document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        document.querySelector(this.getAttribute('href')).scrollIntoView({
+            behavior: 'smooth'
+        });
+    });
+});
 
-function App() {
-    return (
-        <Canvas>
-            <SolarSystemModel />
-        </Canvas>
-    );
+// Image Carousel Functionality
+let currentImageIndex = 0;
+const images = document.querySelectorAll('.carousel-container img');
+const totalImages = images.length;
+
+function showNextImage() {
+    images[currentImageIndex].classList.remove('active');
+    currentImageIndex = (currentImageIndex + 1) % totalImages;
+    images[currentImageIndex].classList.add('active');
 }
 
-ReactDOM.render(<App />, document.getElementById('solar-system'));
+// Auto-rotate carousel images every 3 seconds
+setInterval(showNextImage, 3000);
+
+// Dark Mode Toggle
+const darkModeToggle = document.createElement('button');
+darkModeToggle.innerText = "Toggle Dark Mode";
+darkModeToggle.classList.add('dark-mode-button');
+document.body.appendChild(darkModeToggle);
+
+darkModeToggle.addEventListener('click', function () {
+    document.body.classList.toggle('dark-mode');
+});
+
+// Add active class to the first image in the carousel on load
+images[currentImageIndex].classList.add('active');
+
+// Scroll Animations using Intersection Observer
+const sections = document.querySelectorAll('section');
+
+const observerOptions = {
+    threshold: 0.5,
+    rootMargin: "0px 0px -50px 0px"
+};
+
+const sectionObserver = new IntersectionObserver((entries, observer) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.classList.add('animate');
+        }
+    });
+}, observerOptions);
+
+sections.forEach(section => {
+    sectionObserver.observe(section);
+});
+
+// Smooth appearance for sections
+window.addEventListener('scroll', () => {
+    const scrollY = window.scrollY;
+    sections.forEach(section => {
+        if (section.offsetTop < scrollY + window.innerHeight / 1.2) {
+            section.classList.add('visible');
+        } else {
+            section.classList.remove('visible');
+        }
+    });
+});
